@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentSection = "";
 
     sections.forEach((section) => {
-      const sectionTop = section.offsetTop;
+      const sectionTop = section.offsetTop - 120;
       const sectionHeight = section.clientHeight;
 
-      if (pageYOffset >= sectionTop - sectionHeight / 3) {
+      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
         currentSection = section.getAttribute("id");
       }
     });
@@ -21,4 +21,30 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+});
+
+// ✅ Form submission with popup success message
+const form = document.getElementById("contact-form");
+const successMessage = document.getElementById("success-message");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault(); // prevent page reload
+
+  const formData = new FormData(form);
+
+  const response = await fetch(form.action, {
+    method: form.method,
+    body: formData,
+    headers: { Accept: "application/json" },
+  });
+
+  if (response.ok) {
+    successMessage.style.display = "block";
+    form.reset(); // clear the form
+    setTimeout(() => {
+      successMessage.style.display = "none";
+    }, 4000); // hide message after 4 seconds
+  } else {
+    alert("Oops! Something went wrong. Please try again.");
+  }
 });
